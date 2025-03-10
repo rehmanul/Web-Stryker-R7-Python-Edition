@@ -1,0 +1,50 @@
+graph TD
+    subgraph "Core Domain"
+        DM["Domain Models"] --> |uses| EN["Entities"]
+        EN --> CE["CompanyEntity"]
+        EN --> PE["ProductEntity"]
+        EN --> ES["ExtractionState"]
+    end
+    
+    subgraph "Services Layer"
+        ES["ExtractionService"] --> |uses| CEX["CompanyExtractor"]
+        ES --> |uses| CONTEX["ContactExtractor"]
+        ES --> |uses| PRODEX["ProductExtractor"]
+        ES --> |uses| AIE["AiEnricher"]
+        ES --> |uses| KGS["KnowledgeGraphService"]
+        ES --> |uses| SEM["SemanticAnalyzer"]
+        ES --> |uses| DR["DataRepository"]
+    end
+    
+    subgraph "API Integration"
+        GC["GoogleCloudApi"] --> |integrates| VIS["VisionAPI"]
+        GC --> |integrates| VAI["VertexAI"]
+        AZ["AzureOpenAI"] --> |uses| GPT["GPT Integration"]
+        KG["KnowledgeGraph"] --> |uses| KGAPI["Knowledge Graph API"]
+    end
+    
+    subgraph "User Interfaces"
+        CLI["Command Line Interface"] --> |uses| EC["ExtractionController"] 
+        WUI["Web UI - Flask/FastAPI"] --> |uses| EC
+        GUI["Desktop GUI - PyQt"] --> |uses| EC
+        EC --> |uses| ES
+    end
+    
+    subgraph "Data Storage"
+        DR --> |uses| SQL["SQLite/PostgreSQL"]
+        DR --> |uses| CSV["CSV Export/Import"]
+        DR --> |uses| JSON["JSON Export/Import"]
+    end
+    
+    subgraph "Utilities"
+        LOG["Logging"] 
+        CFG["Configuration"]
+        ERR["Error Handling"]
+    end
+    
+    CLI --> LOG
+    WUI --> LOG
+    GUI --> LOG
+    ES --> LOG
+    ES --> CFG
+    ES --> ERR

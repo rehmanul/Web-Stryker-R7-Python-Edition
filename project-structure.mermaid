@@ -1,0 +1,41 @@
+graph TD
+    src[Web Stryker R7 Python]
+    src --> main[main.py]
+    src --> config.py
+    src --> domain_models.py
+    src --> logging_system.py
+    
+    src --> extractors[extractors/]
+    extractors --> base[base_extractors.py]
+    extractors --> company[company_extractor.py]
+    extractors --> contact[contact_extractor.py]
+    extractors --> product[product_extractor.py]
+    
+    src --> services[services/]
+    services --> extraction[extraction_service.py]
+    services --> ai[ai_enricher.py]
+    services --> kg[knowledge_graph.py]
+    
+    src --> data[data/]
+    data --> repo[data_repository.py]
+    data --> migrations[migrations.py]
+    
+    src --> web[web/]
+    web --> app[web_application.py]
+    web --> templates[templates/]
+    web --> static[static/]
+    
+    src --> cli[cli/]
+    cli --> cli_app[cli.py]
+    cli --> commands[commands/]
+    
+    src --> utils[utils/]
+    utils --> url[url_utils.py]
+    utils --> html[html_utils.py]
+    utils --> stats[stats_utils.py]
+    
+    src --> docs[docs/]
+    src --> tests[tests/]
+    src --> setup.py
+    src --> requirements.txt
+    src --> README.md
