@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Stryker R7 - Logs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #3b82f6;
+      --primary-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
+      --secondary-color: #424242;
+      --success-color: #22c55e;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --background-color: #ffffff;
+      --surface-color: #f8f9fa;
+      --text-primary: #212121;
+      --text-secondary: #616161;
+      --border-color: #e0e0e0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --card-gradient: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.02));
+    }
+
+    body.dark-theme {
+      --primary-color: #3b82f6;
+      --primary-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
+      --secondary-color: #9aa0a6;
+      --background-color: #121212;
+      --surface-color: #1e1e1e;
+      --text-primary: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --border-color: #3c4043;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+      --card-gradient: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+    }
+
+    .header {
+      background-color: var(--surface-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 4px var(--shadow-color);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .logo i {
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+
+    .logo h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-button {
+      background-color: transparent;
+      border: none;
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary-color);
+    }
+
+    .nav-button.active {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary-color);
+    }
+
+    .nav-button i {
+      font-size: 16px;
+    }
+
+    .main-content {
+      margin-top: 30px;
+      padding-bottom: 60px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .tab.active {
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .filter-input {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      font-size: 14px;
+      min-width: 120px;
+    }
+
+    .filter-button {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .log-container {
+      background: var(--surface-color);
+      border-radius: 12px;
+      box-shadow: 0 4px 8px var(--shadow-color);
+      overflow: hidden;
+    }
+
+    .log-toolbar {
+      padding: 16px 20px;
+      background-color: rgba(59, 130, 246, 0.05);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .log-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .log-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .action-button {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .action-button:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .action-button.primary {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+    }
+
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .log-table th {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .log-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+
+    .log-table tbody tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    .log-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-success {
+      background-color: rgba(34, 197, 94, 0.1);
+      color: var(--success-color);
+    }
+
+    .status-warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+    }
+
+    .status-error {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error-color);
+    }
+
+    .status-info {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary-color);
+    }
+
+    .log-details {
+      max-width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .expand-button {
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      cursor: pointer;
+      padding: 0;
+      font-size: 14px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .page-button {
+      background-color: var(--surface-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .page-button:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .page-button.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .page-button.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: var(--surface-color);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 25px var(--shadow-color);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .code-block {
+      background-color: rgba(59, 130, 246, 0.05);
+      border: 1px solid rgba(59, 130, 246, 0.1);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: var(--text-primary);
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .detail-row {
+      display: flex;
+      margin-bottom: 12px;
+    }
+
+    .detail-label {
+      font-weight: 500;
+      width: 120px;
+      flex-shrink: 0;
+      color: var(--text-secondary);
+    }
+
+    .detail-value {
+      flex: 1;
+    }
+
+    @media (max-width: 768px) {
+      .filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .log-table th:nth-child(3),
+      .log-table td:nth-child(3) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <a href="/" class="logo">
+        <i class="fas fa-cube"></i>
+        <h1>Web Stryker R7</h1>
+      </a>
+      <div class="nav-menu">
+        <button class="nav-button" onclick="navigateTo('dashboard')">
+          <i class="fas fa-chart-pie"></i>
+          Dashboard
+        </button>
+        <button class="nav-button" onclick="navigateTo('extraction')">
+          <i class="fas fa-download"></i>
+          Extraction
+        </button>
+        <button class="nav-button" onclick="navigateTo('results')">
+          <i class="fas fa-database"></i>
+          Results
+        </button>
+        <button class="nav-button active" onclick="navigateTo('logs')">
+          <i class="fas fa-list"></i>
+          Logs
+        </button>
+        <button class="nav-button" onclick="navigateTo('settings')">
+          <i class="fas fa-cog"></i>
+          Settings
+        </button>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <h2 class="section-title">System Logs</h2>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('extraction')">Extraction Logs</div>
+      <div class="tab" onclick="switchTab('error')">Error Logs</div>
+      <div class="tab" onclick="switchTab('api')">API Logs</div>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-item">
+        <label class="filter-label" for="dateFrom">Date Range:</label>
+        <input type="date" class="filter-input" id="dateFrom">
+        <span>to</span>
+        <input type="date" class="filter-input" id="dateTo">
+      </div>
+      <div class="filter-item">
+        <label class="filter-label" for="statusFilter">Status:</label>
+        <select class="filter-select" id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="Completed">Completed</option>
+          <option value="Error">Error</option>
+          <option value="Warning">Warning</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <button class="filter-button" onclick="applyFilters()">
+          <i class="fas fa-filter"></i>
+          Apply Filters
+        </button>
+      </div>
+    </div>
+
+    <div id="extraction-logs" class="log-container">
+      <div class="log-toolbar">
+        <div class="log-title">Extraction Process Logs</div>
+        <div class="log-actions">
+          <button class="action-button" onclick="refreshLogs()">
+            <i class="fas fa-sync-alt"></i>
+            Refresh
+          </button>
+          <button class="action-button" onclick="exportLogs()">
+            <i class="fas fa-download"></i>
+            Export
+          </button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>URL</th>
+              <th>Extraction ID</th>
+              <th>Operation</th>
+              <th>Status</th>
+              <th>Details</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2025-03-10 09:15:22</td>
+              <td>https://example.com</td>
+              <td>ext-123456</td>
+              <td>Extraction</td>
+              <td><span class="log-status status-success">Completed</span></td>
+              <td class="log-details">Successfully extracted company data with 8 products</td>
+              <td>
+                <button class="expand-button" onclick="viewLogDetails('ext-123456')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-10 09:10:15</td>
+              <td>https://sample-site.com</td>
+              <td>ext-123455</td>
+              <td>Extraction</td>
+              <td><span class="log-status status-warning">Warning</span></td>
+              <td class="log-details">Completed with warnings: Missing contact information</td>
+              <td>
+                <button class="expand-button" onclick="viewLogDetails('ext-123455')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-10 09:05:38</td>
+              <td>https://error-domain.com</td>
+              <td>ext-123454</td>
+              <td>Extraction</td>
+              <td><span class="log-status status-error">Error</span></td>
+              <td class="log-details">Failed to connect: Connection timeout after 30 seconds</td>
+              <td>
+                <button class="expand-button" onclick="viewLogDetails('ext-123454')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-10 09:00:12</td>
+              <td>https://another-example.com</td>
+              <td>ext-123453</td>
+              <td>Extraction</td>
+              <td><span class="log-status status-success">Completed</span></td>
+              <td class="log-details">Successfully extracted company data with 5 products and 3 contact methods</td>
+              <td>
+                <button class="expand-button" onclick="viewLogDetails('ext-123453')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-10 08:55:47</td>
+              <td>N/A</td>
+              <td>ext-123452</td>
+              <td>Config</td>
+              <td><span class="log-status status-info">Info</span></td>
+              <td class="log-details">Configuration updated: API keys changed</td>
+              <td>
+                <button class="expand-button" onclick="viewLogDetails('ext-123452')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="error-logs" class="log-container" style="display: none;">
+      <div class="log-toolbar">
+        <div class="log-title">Error Logs</div>
+        <div class="log-actions">
+          <button class="action-button" onclick="refreshLogs()">
+            <i class="fas fa-sync-alt"></i>
+            Refresh
+          </button>
+          <button class="action-button" onclick="exportLogs()">
+            <i class="fas fa-download"></i>
+            Export
+          </button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>URL</th>
+              <th>Extraction ID</th>
+              <th>Error Type</th>
+              <th>Error Message</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2025-03-10 09:05:38</td>
+              <td>https://error-domain.com</td>
+              <td>ext-123454</td>
+              <td>ConnectionError</td>
+              <td class="log-details">Connection timeout after 30 seconds</td>
+              <td>
+                <button class="expand-button" onclick="viewErrorDetails('ext-123454')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-09 15:43:22</td>
+              <td>https://invalid-site.net</td>
+              <td>ext-123432</td>
+              <td>HTTPError</td>
+              <td class="log-details">HTTP Error 404: Not Found</td>
+              <td>
+                <button class="expand-button" onclick="viewErrorDetails('ext-123432')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-09 12:21:05</td>
+              <td>https://api-error.org</td>
+              <td>ext-123420</td>
+              <td>APIError</td>
+              <td class="log-details">Azure OpenAI API returned: Rate limit exceeded</td>
+              <td>
+                <button class="expand-button" onclick="viewErrorDetails('ext-123420')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-09 10:15:38</td>
+              <td>https://parsing-issue.com</td>
+              <td>ext-123412</td>
+              <td>ParsingError</td>
+              <td class="log-details">Failed to parse JSON response: Unexpected token at line 2</td>
+              <td>
+                <button class="expand-button" onclick="viewErrorDetails('ext-123412')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-09 09:02:17</td>
+              <td>https://auth-problem.io</td>
+              <td>ext-123405</td>
+              <td>AuthError</td>
+              <td class="log-details">Knowledge Graph API authentication failed: Invalid API key</td>
+              <td>
+                <button class="expand-button" onclick="viewErrorDetails('ext-123405')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="api-logs" class="log-container" style="display: none;">
+      <div class="log-toolbar">
+        <div class="log-title">API Call Logs</div>
+        <div class="log-actions">
+          <button class="action-button" onclick="refreshLogs()">
+            <i class="fas fa-sync-alt"></i>
+            Refresh
+          </button>
+          <button class="action-button" onclick="exportLogs()">
+            <i class="fas fa-download"></i>
+            Export
+          </button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>API</th>
+              <th>Extraction ID</th>
+              <th>Operation</th>
+              <th>Status</th>
+              <th>Duration</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2025-03-10 09:15:20</td>
+              <td>Azure OpenAI</td>
+              <td>ext-123456</td>
+              <td>Enrichment</td>
+              <td><span class="log-status status-success">Success</span></td>
+              <td>1.2s</td>
+              <td>
+                <button class="expand-button" onclick="viewApiDetails('api-123456')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-10 09:15:18</td>
+              <td>Knowledge Graph</td>
+              <td>ext-123456</td>
+              <td>Entity Lookup</td>
+              <td><span class="log-status status-success">Success</span></td>
+              <td>0.8s</td>
+              <td>
+                <button class="expand-button" onclick="viewApiDetails('api-123455')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-10 09:10:12</td>
+              <td>Azure OpenAI</td>
+              <td>ext-123455</td>
+              <td>Enrichment</td>
+              <td><span class="log-status status-success">Success</span></td>
+              <td>1.5s</td>
+              <td>
+                <button class="expand-button" onclick="viewApiDetails('api-123454')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-10 09:05:35</td>
+              <td>Azure OpenAI</td>
+              <td>ext-123454</td>
+              <td>Enrichment</td>
+              <td><span class="log-status status-error">Error</span></td>
+              <td>30.0s</td>
+              <td>
+                <button class="expand-button" onclick="viewApiDetails('api-123453')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2025-03-10 09:00:10</td>
+              <td>Knowledge Graph</td>
+              <td>ext-123453</td>
+              <td>Entity Lookup</td>
+              <td><span class="log-status status-success">Success</span></td>
+              <td>0.7s</td>
+              <td>
+                <button class="expand-button" onclick="viewApiDetails('api-123452')">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pagination">
+      <button class="page-button disabled">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="page-button active">1</button>
+      <button class="page-button">2</button>
+      <button class="page-button">3</button>
+      <button class="page-button">4</button>
+      <button class="page-button">5</button>
+      <button class="page-button">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </main>
+
+  <!-- Log Detail Modal -->
+  <div class="modal" id="logDetailModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Log Details</h2>
+        <button class="modal-close" onclick="closeModal('logDetailModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="logDetailBody">
+        <!-- Log details will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle
+    let darkTheme = false;
+
+    function toggleTheme() {
+      darkTheme = !darkTheme;
+      document.body.classList.toggle('dark-theme', darkTheme);
+      const icon = document.querySelector('.theme-toggle i');
+      icon.className = darkTheme ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    // Navigation
+    function navigateTo(page) {
+      switch (page) {
+        case 'dashboard':
+          window.location.href = '/';
+          break;
+        case 'extraction':
+          window.location.href = '/extraction';
+          break;
+        case 'results':
+          window.location.href = '/results';
+          break;
+        case 'logs':
+          window.location.href = '/logs';
+          break;
+        case 'settings':
+          window.location.href = '/settings';
+          break;
+        default:
+          console.error('Unknown page:', page);
+      }
+    }
+
+    // Switch between log types
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.toggle('active', tab.textContent.toLowerCase().includes(tabName.toLowerCase()));
+      });
+      
+      // Hide all log containers
+      document.querySelectorAll('.log-container').forEach(container => {
+        container.style.display = 'none';
+      });
+      
+      // Show selected log container
+      document.getElementById(`${tabName}-logs`).style.display = 'block';
+    }
+
+    // Apply filters
+    function applyFilters() {
+      const dateFrom = document.getElementById('dateFrom').value;
+      const dateTo = document.getElementById('dateTo').value;
+      const status = document.getElementById('statusFilter').value;
+      
+      console.log('Applying filters:', { dateFrom, dateTo, status });
+      // In a real app, this would trigger a filtered request to the server
+      alert(`Filters applied: From ${dateFrom || 'any'} to ${dateTo || 'any'}, Status: ${status || 'All'}`);
+    }
+
+    // Refresh logs
+    function refreshLogs() {
+      console.log('Refreshing logs');
+      // In a real app, this would trigger a refresh from the server
+      alert('Logs refreshed');
+    }
+
+    // Export logs
+    function exportLogs() {
+      console.log('Exporting logs');
+      // In a real app, this would trigger a download
+      alert('Logs exported as CSV');
+    }
+
+    // View log details
+    function viewLogDetails(logId) {
+      // In a real app, this would fetch the details from the server
+      
+      let detailHtml = `
+        <div class="detail-row">
+          <div class="detail-label">Log ID:</div>
+          <div class="detail-value">${logId}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Timestamp:</div>
+          <div class="detail-value">2025-03-10 09:15:22</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">URL:</div>
+          <div class="detail-value">https://example.com</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Operation:</div>
+          <div class="detail-value">Extraction</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Status:</div>
+          <div class="detail-value"><span class="log-status status-success">Completed</span></div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Duration:</div>
+          <div class="detail-value">3.2 seconds</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Details:</div>
+          <div class="detail-value">Successfully extracted company data with 8 products. Found 2 emails and 1 phone number. AI enhancement improved product categorization.</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Result:</div>
+          <div class="detail-value">
+            <div class="code-block">
+{
+  "company_name": "Acme Corporation",
+  "company_type": "Technology",
+  "company_description": "Leading provider of innovative solutions...",
+  "emails": ["contact@example.com", "support@example.com"],
+  "phones": ["+1-555-123-4567"],
+  "products": 8,
+  "extraction_date": "2025-03-10T09:15:22"
+}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('logDetailBody').innerHTML = detailHtml;
+      openModal('logDetailModal');
+    }
+
+    // View error details
+    function viewErrorDetails(logId) {
+      // In a real app, this would fetch the details from the server
+      
+      let detailHtml = `
+        <div class="detail-row">
+          <div class="detail-label">Log ID:</div>
+          <div class="detail-value">${logId}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Timestamp:</div>
+          <div class="detail-value">2025-03-10 09:05:38</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">URL:</div>
+          <div class="detail-value">https://error-domain.com</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Error Type:</div>
+          <div class="detail-value">ConnectionError</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Error Message:</div>
+          <div class="detail-value">Connection timeout after 30 seconds</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Stack Trace:</div>
+          <div class="detail-value">
+            <div class="code-block">
+Traceback (most recent call last):
+  File "extraction_service.py", line 123, in process_url
+    content = await self.fetch_content(url, extraction_id)
+  File "extraction_service.py", line 87, in fetch_content
+    response = requests.get(url, headers=headers, timeout=timeout_seconds)
+  File ".venv/lib/python3.9/site-packages/requests/api.py", line 76, in get
+    return request('get', url, **kwargs)
+  File ".venv/lib/python3.9/site-packages/requests/api.py", line 61, in request
+    return session.request(method=method, url=url, **kwargs)
+  File ".venv/lib/python3.9/site-packages/requests/sessions.py", line 530, in request
+    resp = self.send(prep, **send_kwargs)
+  File ".venv/lib/python3.9/site-packages/requests/sessions.py", line 643, in send
+    r = adapter.send(request, **kwargs)
+  File ".venv/lib/python3.9/site-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File ".venv/lib/python3.9/site-packages/urllib3/connectionpool.py", line 700, in urlopen
+    httplib_response = self._make_request(
+  File ".venv/lib/python3.9/site-packages/urllib3/connectionpool.py", line 381, in _make_request
+    self._validate_conn(conn)
+  File ".venv/lib/python3.9/site-packages/urllib3/connectionpool.py", line 978, in _validate_conn
+    conn.connect()
+  File ".venv/lib/python3.9/site-packages/urllib3/connection.py", line 362, in connect
+    self.sock = conn = self._new_conn()
+  File ".venv/lib/python3.9/site-packages/urllib3/connection.py", line 175, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7f8b1c3a7c40>, 'Connection to error-domain.com timed out. (connect timeout=30)')
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('logDetailBody').innerHTML = detailHtml;
+      openModal('logDetailModal');
+    }
+
+    // View API details
+    function viewApiDetails(apiLogId) {
+      // In a real app, this would fetch the details from the server
+      
+      let detailHtml = `
+        <div class="detail-row">
+          <div class="detail-label">Log ID:</div>
+          <div class="detail-value">${apiLogId}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Timestamp:</div>
+          <div class="detail-value">2025-03-10 09:15:20</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">API:</div>
+          <div class="detail-value">Azure OpenAI</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Operation:</div>
+          <div class="detail-value">Enrichment</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Status:</div>
+          <div class="detail-value"><span class="log-status status-success">Success</span></div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Duration:</div>
+          <div class="detail-value">1.2 seconds</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Endpoint:</div>
+          <div class="detail-value">https://fetcher.openai.azure.com/openai/deployments/gpt-4/chat/completions</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Request:</div>
+          <div class="detail-value">
+            <div class="code-block">
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI assistant that specializes in analyzing company and product information..."
+    },
+    {
+      "role": "user",
+      "content": "Analyze this company data and provide enriched information: Company Name: Acme Corporation..."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 1000
+}
+            </div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Response:</div>
+          <div class="detail-value">
+            <div class="code-block">
+{
+  "id": "chatcmpl-abc123",
+  "object": "chat.completion",
+  "created": 1678277182,
+  "model": "gpt-4",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\\"refinedCompanyType\\": \\"Software Technology\\", \\"productCategories\\": [\\"Business Software\\", \\"Productivity Tools\\"], \\"targetMarket\\": \\"Enterprise and Small Business\\"}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 250,
+    "completion_tokens": 126,
+    "total_tokens": 376
+  }
+}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('logDetailBody').innerHTML = detailHtml;
+      openModal('logDetailModal');
+    }
+
+    // Modal functions
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check for dark mode preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        toggleTheme();
+      }
+      
+      // Set today's date as the "To" date in the date filter
+      const today = new Date();
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(today.getDate() - 7);
+      
+      document.getElementById('dateFrom').valueAsDate = oneWeekAgo;
+      document.getElementById('dateTo').valueAsDate = today;
+    });
+  </script>
+</body>
+</html>

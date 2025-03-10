@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Stryker R7 - Results</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #3b82f6;
+      --primary-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
+      --secondary-color: #424242;
+      --success-color: #22c55e;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --background-color: #ffffff;
+      --surface-color: #f8f9fa;
+      --text-primary: #212121;
+      --text-secondary: #616161;
+      --border-color: #e0e0e0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --card-gradient: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.02));
+    }
+
+    body.dark-theme {
+      --primary-color: #3b82f6;
+      --primary-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
+      --secondary-color: #9aa0a6;
+      --background-color: #121212;
+      --surface-color: #1e1e1e;
+      --text-primary: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --border-color: #3c4043;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+      --card-gradient: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+    }
+
+    .header {
+      background-color: var(--surface-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 4px var(--shadow-color);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .logo i {
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+
+    .logo h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-button {
+      background-color: transparent;
+      border: none;
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary-color);
+    }
+
+    .nav-button.active {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary-color);
+    }
+
+    .nav-button i {
+      font-size: 16px;
+    }
+
+    .main-content {
+      margin-top: 30px;
+      padding-bottom: 60px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .search-button {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-button {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-button:hover,
+    .sort-button:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .sort-button {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card {
+      background: var(--surface-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px var(--shadow-color);
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-button {
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .data-table th {
+      background-color: var(--surface-color);
+      color: var(--text-secondary);
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+    }
+
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    .company-type {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary-color);
+    }
+
+    .detail-link {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .detail-link:hover {
+      text-decoration: underline;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .page-button {
+      background-color: var(--surface-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .page-button:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .page-button.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .page-button.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .results-stats {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    .export-button {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .export-button:hover {
+      box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: var(--surface-color);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 25px var(--shadow-color);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .filter-group {
+      margin-bottom: 16px;
+    }
+
+    .filter-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+
+    .filter-input,
+    .filter-select {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-blue {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary-color);
+    }
+
+    .badge-green {
+      background-color: rgba(34, 197, 94, 0.1);
+      color: var(--success-color);
+    }
+
+    .badge-yellow {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+    }
+
+    .badge-red {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error-color);
+    }
+
+    @media (max-width: 768px) {
+      .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-button,
+      .filter-button,
+      .sort-button {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .data-table th:nth-child(3),
+      .data-table td:nth-child(3) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <a href="/" class="logo">
+        <i class="fas fa-cube"></i>
+        <h1>Web Stryker R7</h1>
+      </a>
+      <div class="nav-menu">
+        <button class="nav-button" onclick="navigateTo('dashboard')">
+          <i class="fas fa-chart-pie"></i>
+          Dashboard
+        </button>
+        <button class="nav-button" onclick="navigateTo('extraction')">
+          <i class="fas fa-download"></i>
+          Extraction
+        </button>
+        <button class="nav-button active" onclick="navigateTo('results')">
+          <i class="fas fa-database"></i>
+          Results
+        </button>
+        <button class="nav-button" onclick="navigateTo('logs')">
+          <i class="fas fa-list"></i>
+          Logs
+        </button>
+        <button class="nav-button" onclick="navigateTo('settings')">
+          <i class="fas fa-cog"></i>
+          Settings
+        </button>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <div class="section-title">
+      <span>Extraction Results</span>
+      <button class="export-button" onclick="openExportModal()">
+        <i class="fas fa-file-export"></i>
+        Export
+      </button>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" class="search-input" placeholder="Search by company name, URL, or type..." id="searchInput">
+      <button class="search-button" onclick="searchResults()">
+        <i class="fas fa-search"></i>
+        Search
+      </button>
+      <button class="filter-button" onclick="openFilterModal()">
+        <i class="fas fa-filter"></i>
+        Filters
+      </button>
+      <button class="sort-button" onclick="openSortModal()">
+        <i class="fas fa-sort"></i>
+        Sort
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Companies (1,243 results)</div>
+        <div class="results-stats">Showing 1-20 of 1,243</div>
+      </div>
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Type</th>
+              <th>Date Extracted</th>
+              <th>Products</th>
+              <th>Contacts</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <a href="/company/1" class="detail-link">Acme Corporation</a>
+                <div style="font-size: 12px; color: var(--text-secondary);">https://example.com</div>
+              </td>
+              <td><span class="company-type">Technology</span></td>
+              <td>2025-03-10</td>
+              <td>8 products</td>
+              <td>
+                <div style="font-size: 12px; margin-bottom: 2px;">
+                  <i class="fas fa-envelope" style="color: var(--primary-color);"></i> 2 emails
+                </div>
+                <div style="font-size: 12px;">
+                  <i class="fas fa-phone" style="color: var(--primary-color);"></i> 1 phone
+                </div>
+              </td>
+              <td>
+                <button class="action-button">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/company/2" class="detail-link">Beta Innovations</a>
+                <div style="font-size: 12px; color: var(--text-secondary);">https://beta-example.com</div>
+              </td>
+              <td><span class="company-type">Healthcare</span></td>
+              <td>2025-03-09</td>
+              <td>12 products</td>
+              <td>
+                <div style="font-size: 12px; margin-bottom: 2px;">
+                  <i class="fas fa-envelope" style="color: var(--primary-color);"></i> 3 emails
+                </div>
+                <div style="font-size: 12px;">
+                  <i class="fas fa-phone" style="color: var(--primary-color);"></i> 2 phones
+                </div>
+              </td>
+              <td>
+                <button class="action-button">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/company/3" class="detail-link">Gamma Solutions</a>
+                <div style="font-size: 12px; color: var(--text-secondary);">https://gamma-solutions.com</div>
+              </td>
+              <td><span class="company-type">Financial Services</span></td>
+              <td>2025-03-08</td>
+              <td>5 products</td>
+              <td>
+                <div style="font-size: 12px; margin-bottom: 2px;">
+                  <i class="fas fa-envelope" style="color: var(--primary-color);"></i> 1 email
+                </div>
+                <div style="font-size: 12px;">
+                  <i class="fas fa-phone" style="color: var(--primary-color);"></i> 1 phone
+                </div>
+              </td>
+              <td>
+                <button class="action-button">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/company/4" class="detail-link">Delta Designs</a>
+                <div style="font-size: 12px; color: var(--text-secondary);">https://delta-designs.net</div>
+              </td>
+              <td><span class="company-type">Manufacturing</span></td>
+              <td>2025-03-07</td>
+              <td>15 products</td>
+              <td>
+                <div style="font-size: 12px; margin-bottom: 2px;">
+                  <i class="fas fa-envelope" style="color: var(--primary-color);"></i> 2 emails
+                </div>
+                <div style="font-size: 12px;">
+                  <i class="fas fa-phone" style="color: var(--primary-color);"></i> 3 phones
+                </div>
+              </td>
+              <td>
+                <button class="action-button">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/company/5" class="detail-link">Epsilon Electronics</a>
+                <div style="font-size: 12px; color: var(--text-secondary);">https://epsilon-electronics.com</div>
+              </td>
+              <td><span class="company-type">Retail</span></td>
+              <td>2025-03-06</td>
+              <td>24 products</td>
+              <td>
+                <div style="font-size: 12px; margin-bottom: 2px;">
+                  <i class="fas fa-envelope" style="color: var(--primary-color);"></i> 2 emails
+                </div>
+                <div style="font-size: 12px;">
+                  <i class="fas fa-phone" style="color: var(--primary-color);"></i> 1 phone
+                </div>
+              </td>
+              <td>
+                <button class="action-button">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pagination">
+      <button class="page-button disabled">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="page-button active">1</button>
+      <button class="page-button">2</button>
+      <button class="page-button">3</button>
+      <button class="page-button">4</button>
+      <button class="page-button">5</button>
+      <button class="page-button">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </main>
+
+  <!-- Filter Modal -->
+  <div class="modal" id="filterModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Filter Results</h2>
+        <button class="modal-close" onclick="closeModal('filterModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="filter-group">
+          <label class="filter-label" for="companyType">Company Type</label>
+          <select class="filter-select" id="companyType">
+            <option value="">All Types</option>
+            <option value="Technology">Technology</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Retail">Retail</option>
+            <option value="Manufacturing">Manufacturing</option>
+            <option value="Financial Services">Financial Services</option>
+            <option value="Food & Beverage">Food & Beverage</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="dateRange">Date Range</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="date" class="filter-input" id="dateFrom" style="width: 50%;">
+            <input type="date" class="filter-input" id="dateTo" style="width: 50%;">
+          </div>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Contact Information</label>
+          <div style="display: flex; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="hasEmail">
+              <label for="hasEmail" style="font-size: 14px;">Has Email</label>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="hasPhone">
+              <label for="hasPhone" style="font-size: 14px;">Has Phone</label>
+            </div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Products</label>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="hasProducts">
+            <label for="hasProducts" style="font-size: 14px;">Has Products</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="filter-button" onclick="clearFilters()">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+        <button class="search-button" onclick="applyFilters()">
+          <i class="fas fa-filter"></i> Apply Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sort Modal -->
+  <div class="modal" id="sortModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Sort Results</h2>
+        <button class="modal-close" onclick="closeModal('sortModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="filter-group">
+          <label class="filter-label" for="sortField">Sort By</label>
+          <select class="filter-select" id="sortField">
+            <option value="date">Date Extracted</option>
+            <option value="name">Company Name</option>
+            <option value="products">Number of Products</option>
+            <option value="contacts">Number of Contacts</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="sortOrder">Order</label>
+          <select class="filter-select" id="sortOrder">
+            <option value="desc">Descending (newest first)</option>
+            <option value="asc">Ascending (oldest first)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="filter-button" onclick="closeModal('sortModal')">
+          Cancel
+        </button>
+        <button class="search-button" onclick="applySort()">
+          <i class="fas fa-sort"></i> Apply
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Modal -->
+  <div class="modal" id="exportModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Export Results</h2>
+        <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="filter-group">
+          <label class="filter-label" for="exportFormat">Export Format</label>
+          <select class="filter-select" id="exportFormat">
+            <option value="csv">CSV (Comma Separated Values)</option>
+            <option value="json">JSON (JavaScript Object Notation)</option>
+            <option value="xlsx">Excel (XLSX)</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Export Options</label>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <input type="checkbox" id="exportCurrentPage" checked>
+            <label for="exportCurrentPage" style="font-size: 14px;">Current page only</label>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <input type="checkbox" id="exportAllResults">
+            <label for="exportAllResults" style="font-size: 14px;">All results (may take longer)</label>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="exportWithProducts" checked>
+            <label for="exportWithProducts" style="font-size: 14px;">Include product details</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="filter-button" onclick="closeModal('exportModal')">
+          Cancel
+        </button>
+        <button class="search-button" onclick="exportResults()">
+          <i class="fas fa-file-export"></i> Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle
+    let darkTheme = false;
+
+    function toggleTheme() {
+      darkTheme = !darkTheme;
+      document.body.classList.toggle('dark-theme', darkTheme);
+      const icon = document.querySelector('.theme-toggle i');
+      icon.className = darkTheme ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    // Navigation
+    function navigateTo(page) {
+      switch (page) {
+        case 'dashboard':
+          window.location.href = '/';
+          break;
+        case 'extraction':
+          window.location.href = '/extraction';
+          break;
+        case 'results':
+          window.location.href = '/results';
+          break;
+        case 'logs':
+          window.location.href = '/logs';
+          break;
+        case 'settings':
+          window.location.href = '/settings';
+          break;
+        default:
+          console.error('Unknown page:', page);
+      }
+    }
+
+    // Modal functions
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function openFilterModal() {
+      openModal('filterModal');
+    }
+
+    function openSortModal() {
+      openModal('sortModal');
+    }
+
+    function openExportModal() {
+      openModal('exportModal');
+    }
+
+    // Search function
+    function searchResults() {
+      const searchTerm = document.getElementById('searchInput').value;
+      // In a real app, this would trigger a search request to the server
+      console.log('Searching for:', searchTerm);
+      
+      // For demo purposes, we'll just log the search term
+      alert(`Searching for: ${searchTerm}`);
+    }
+
+    // Filter functions
+    function applyFilters() {
+      // Get filter values
+      const companyType = document.getElementById('companyType').value;
+      const dateFrom = document.getElementById('dateFrom').value;
+      const dateTo = document.getElementById('dateTo').value;
+      const hasEmail = document.getElementById('hasEmail').checked;
+      const hasPhone = document.getElementById('hasPhone').checked;
+      const hasProducts = document.getElementById('hasProducts').checked;
+      
+      // Build filter object
+      const filters = {
+        companyType,
+        dateFrom,
+        dateTo,
+        hasEmail,
+        hasPhone,
+        hasProducts
+      };
+      
+      // In a real app, this would trigger a filtered search request to the server
+      console.log('Applying filters:', filters);
+      
+      // For demo purposes, we'll just log the filters
+      alert(`Filters applied: ${JSON.stringify(filters)}`);
+      
+      // Close modal
+      closeModal('filterModal');
+    }
+
+    function clearFilters() {
+      document.getElementById('companyType').value = '';
+      document.getElementById('dateFrom').value = '';
+      document.getElementById('dateTo').value = '';
+      document.getElementById('hasEmail').checked = false;
+      document.getElementById('hasPhone').checked = false;
+      document.getElementById('hasProducts').checked = false;
+    }
+
+    // Sort function
+    function applySort() {
+      const sortField = document.getElementById('sortField').value;
+      const sortOrder = document.getElementById('sortOrder').value;
+      
+      // In a real app, this would trigger a sorted search request to the server
+      console.log('Sorting by:', sortField, sortOrder);
+      
+      // For demo purposes, we'll just log the sort parameters
+      alert(`Sorting by: ${sortField} in ${sortOrder} order`);
+      
+      // Close modal
+      closeModal('sortModal');
+    }
+
+    // Export function
+    function exportResults() {
+      const format = document.getElementById('exportFormat').value;
+      const currentPageOnly = document.getElementById('exportCurrentPage').checked;
+      const includeProducts = document.getElementById('exportWithProducts').checked;
+      
+      // In a real app, this would trigger an export request to the server
+      console.log('Exporting as:', format, 'Current page only:', currentPageOnly, 'Include products:', includeProducts);
+      
+      // For demo purposes, we'll just log the export parameters
+      alert(`Exporting as ${format}. Current page only: ${currentPageOnly}. Include products: ${includeProducts}`);
+      
+      // Close modal
+      closeModal('exportModal');
+      
+      // Simulate download starting
+      setTimeout(() => {
+        alert('Export complete! Download starting...');
+      }, 1500);
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check for dark mode preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        toggleTheme();
+      }
+    });
+  </script>
+</body>
+</html>

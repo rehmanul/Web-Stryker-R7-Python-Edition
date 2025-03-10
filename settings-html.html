@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Stryker R7 - Settings</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+    }
+    .sidebar {
+      min-height: 100vh;
+      background-color: #212529;
+      padding-top: 20px;
+    }
+    .sidebar .nav-link {
+      color: #adb5bd;
+      padding: 0.75rem 1rem;
+      font-weight: 500;
+    }
+    .sidebar .nav-link:hover {
+      color: #fff;
+    }
+    .sidebar .nav-link.active {
+      color: #fff;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .card {
+      border-radius: 8px;
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      margin-bottom: 20px;
+    }
+    .card-header {
+      background-color: rgba(0, 0, 0, 0.03);
+      font-weight: 500;
+    }
+    .form-label {
+      font-weight: 500;
+    }
+    .api-key-input {
+      font-family: monospace;
+    }
+    .btn-save {
+      background-color: #0d6efd;
+      color: white;
+    }
+    .settings-icon {
+      margin-right: 0.5rem;
+      opacity: 0.8;
+    }
+    .settings-footer {
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+        <div class="position-sticky pt-3">
+          <div class="text-center mb-4">
+            <h4 class="text-white">Web Stryker R7</h4>
+          </div>
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="fas fa-tachometer-alt me-2"></i>
+                Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/extraction">
+                <i class="fas fa-download me-2"></i>
+                Extraction
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/results">
+                <i class="fas fa-database me-2"></i>
+                Results
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logs">
+                <i class="fas fa-list me-2"></i>
+                Logs
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/settings">
+                <i class="fas fa-cog me-2"></i>
+                Settings
+              </a>
+            </li>
+          </ul>
+          <hr class="text-white-50">
+          <div class="px-3 mt-4">
+            <div class="text-white-50 small">
+              <div>Version: 1.0.0</div>
+              <div>API Status: <span class="text-success">Online</span></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main content -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">Settings</h1>
+        </div>
+
+        <div class="alert alert-success d-none" id="settingsSavedAlert">
+          Settings saved successfully!
+        </div>
+
+        <form id="settingsForm" method="POST" action="/api/settings">
+          <!-- API Keys Section -->
+          <div class="card mb-4">
+            <div class="card-header d-flex align-items-center">
+              <i class="fas fa-key settings-icon"></i>
+              API Keys
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="azureOpenAIKey" class="form-label">Azure OpenAI API Key</label>
+                  <input type="password" class="form-control api-key-input" id="azureOpenAIKey" name="azure_openai_key" value="{{ config.get('API.AZURE.OPENAI.KEY', '') }}">
+                </div>
+                <div class="col-md-6">
+                  <label for="azureOpenAIEndpoint" class="form-label">Azure OpenAI Endpoint</label>
+                  <input type="text" class="form-control" id="azureOpenAIEndpoint" name="azure_openai_endpoint" value="{{ config.get('API.AZURE.OPENAI.ENDPOINT', 'https://fetcher.openai.azure.com/') }}">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="azureOpenAIDeployment" class="form-label">Azure OpenAI Deployment</label>
+                  <input type="text" class="form-control" id="azureOpenAIDeployment" name="azure_openai_deployment" value="{{ config.get('API.AZURE.OPENAI.DEPLOYMENT', 'gpt-4') }}">
+                </div>
+                <div class="col-md-6">
+                  <label for="knowledgeGraphKey" class="form-label">Knowledge Graph API Key</label>
+                  <input type="password" class="form-control api-key-input" id="knowledgeGraphKey" name="knowledge_graph_api_key" value="{{ config.get('API.KNOWLEDGE_GRAPH.KEY', '') }}">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="googleVisionKey" class="form-label">Google Vision API Key (Optional)</label>
+                  <input type="password" class="form-control api-key-input" id="googleVisionKey" name="google_vision_api_key" value="{{ config.get('API.GOOGLE_CLOUD.VISION.KEY', '') }}">
+                </div>
+                <div class="col-md-6">
+                  <label for="vertexAIKey" class="form-label">Google Vertex AI API Key (Optional)</label>
+                  <input type="password" class="form-control api-key-input" id="vertexAIKey" name="google_vertex_api_key" value="{{ config.get('API.GOOGLE_CLOUD.VERTEX_AI.KEY', '') }}">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Extraction Settings -->
+          <div class="card mb-4">
+            <div class="card-header d-flex align-items-center">
+              <i class="fas fa-sliders-h settings-icon"></i>
+              Extraction Settings
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="timeoutSeconds" class="form-label">Request Timeout (seconds)</label>
+                  <input type="number" class="form-control" id="timeoutSeconds" name="TIMEOUT_SECONDS" value="{{ config.get('TIMEOUT_SECONDS', 30) }}" min="1" max="300">
+                </div>
+                <div class="col-md-4">
+                  <label for="maxRetries" class="form-label">Max Retries</label>
+                  <input type="number" class="form-control" id="maxRetries" name="MAX_RETRIES" value="{{ config.get('MAX_RETRIES', 3) }}" min="0" max="10">
+                </div>
+                <div class="col-md-4">
+                  <label for="maxCrawlDepth" class="form-label">Max Crawl Depth</label>
+                  <input type="number" class="form-control" id="maxCrawlDepth" name="MAX_CRAWL_DEPTH" value="{{ config.get('MAX_CRAWL_DEPTH', 3) }}" min="1" max="5">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="userAgent" class="form-label">User Agent</label>
+                  <input type="text" class="form-control" id="userAgent" name="USER_AGENT" value="{{ config.get('USER_AGENT', 'Mozilla/5.0 (compatible; WebStrykerPython/1.0)') }}">
+                </div>
+                <div class="col-md-6">
+                  <label for="maxProductPages" class="form-label">Max Product Pages</label>
+                  <input type="number" class="form-control" id="maxProductPages" name="MAX_PRODUCT_PAGES" value="{{ config.get('MAX_PRODUCT_PAGES', 10) }}" min="1" max="50">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="enableAdvancedFeatures" name="ENABLE_ADVANCED_FEATURES" {% if config.get('ENABLE_ADVANCED_FEATURES', True) %}checked{% endif %}>
+                    <label class="form-check-label" for="enableAdvancedFeatures">
+                      Enable Advanced Features (AI enhancement, semantic analysis)
+                    </label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="fallbackToBasic" name="FALLBACK_TO_BASIC" {% if config.get('FALLBACK_TO_BASIC', True) %}checked{% endif %}>
+                    <label class="form-check-label" for="fallbackToBasic">
+                      Fallback to Basic Extraction if Advanced Features Fail
+                    </label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="followLinks" name="EXTRACTION.FOLLOW_LINKS" {% if config.get('EXTRACTION.FOLLOW_LINKS', True) %}checked{% endif %}>
+                    <label class="form-check-label" for="followLinks">
+                      Follow Links for Product Discovery
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="extractImages" name="EXTRACTION.EXTRACT_IMAGES" {% if config.get('EXTRACTION.EXTRACT_IMAGES', True) %}checked{% endif %}>
+                    <label class="form-check-label" for="extractImages">
+                      Extract and Store Images
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Database Settings -->
+          <div class="card mb-4">
+            <div class="card-header d-flex align-items-center">
+              <i class="fas fa-database settings-icon"></i>
+              Database Settings
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="databaseType" class="form-label">Database Type</label>
+                  <select class="form-select" id="databaseType" name="DATABASE.TYPE">
+                    <option value="sqlite" {% if config.get('DATABASE.TYPE') == 'sqlite' %}selected{% endif %}>SQLite</option>
+                    <option value="postgresql" {% if config.get('DATABASE.TYPE') == 'postgresql' %}selected{% endif %}>PostgreSQL</option>
+                    <option value="mysql" {% if config.get('DATABASE.TYPE') == 'mysql' %}selected{% endif %}>MySQL</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="databaseConnection" class="form-label">Connection String</label>
+                  <input type="text" class="form-control" id="databaseConnection" name="DATABASE.CONNECTION_STRING" value="{{ config.get('DATABASE.CONNECTION_STRING', 'web_stryker.db') }}">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enableMigrations" name="DATABASE.ENABLE_MIGRATIONS" {% if config.get('DATABASE.ENABLE_MIGRATIONS', True) %}checked{% endif %}>
+                    <label class="form-check-label" for="enableMigrations">
+                      Enable Automatic Schema Migrations
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Web UI Settings -->
+          <div class="card mb-4">
+            <div class="card-header d-flex align-items-center">
+              <i class="fas fa-desktop settings-icon"></i>
+              Web UI Settings
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="webHost" class="form-label">Host</label>
+                  <input type="text" class="form-control" id="webHost" name="WEB_UI.HOST" value="{{ config.get('WEB_UI.HOST', '127.0.0.1') }}">
+                </div>
+                <div class="col-md-6">
+                  <label for="webPort" class="form-label">Port</label>
+                  <input type="number" class="form-control" id="webPort" name="WEB_UI.PORT" value="{{ config.get('WEB_UI.PORT', 8080) }}" min="1" max="65535">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="webDebug" name="WEB_UI.DEBUG" {% if config.get('WEB_UI.DEBUG', True) %}checked{% endif %}>
+                    <label class="form-check-label" for="webDebug">
+                      Enable Debug Mode
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end mb-5">
+            <button type="button" class="btn btn-secondary me-2" onclick="resetForm()">Reset</button>
+            <button type="submit" class="btn btn-save">Save Settings</button>
+          </div>
+        </form>
+
+        <div class="settings-footer mb-4">
+          <p>Config file location: <code>{{ config.config_path }}</code></p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Form submission handler
+    document.getElementById('settingsForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const jsonData = {};
+      
+      // Convert form data to JSON
+      for (const [key, value] of formData.entries()) {
+        if (key.includes('.')) {
+          // Handle nested properties
+          const parts = key.split('.');
+          let current = jsonData;
+          
+          for (let i = 0; i < parts.length - 1; i++) {
+            if (!current[parts[i]]) {
+              current[parts[i]] = {};
+            }
+            current = current[parts[i]];
+          }
+          
+          // Set the value, converting to boolean if it's a checkbox
+          if (document.querySelector(`[name="${key}"]`).type === 'checkbox') {
+            current[parts[parts.length - 1]] = value === 'on';
+          } else {
+            current[parts[parts.length - 1]] = value;
+          }
+        } else {
+          // Handle top-level properties
+          if (document.querySelector(`[name="${key}"]`).type === 'checkbox') {
+            jsonData[key] = value === 'on';
+          } else {
+            jsonData[key] = value;
+          }
+        }
+      }
+      
+      // Submit data
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const alert = document.getElementById('settingsSavedAlert');
+          alert.classList.remove('d-none');
+          setTimeout(() => {
+            alert.classList.add('d-none');
+          }, 3000);
+        } else {
+          alert('Error saving settings: ' + data.error);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while saving settings');
+      });
+    });
+
+    // Reset form to original values
+    function resetForm() {
+      document.getElementById('settingsForm').reset();
+    }
+
+    // Toggle password visibility for API keys
+    document.querySelectorAll('.api-key-input').forEach(input => {
+      const container = input.parentElement;
+      
+      // Create toggle button
+      const toggleBtn = document.createElement('button');
+      toggleBtn.type = 'button';
+      toggleBtn.className = 'btn btn-outline-secondary btn-sm position-absolute end-0 top-50 translate-middle-y me-2';
+      toggleBtn.innerHTML = '<i class="far fa-eye"></i>';
+      toggleBtn.style.zIndex = '5';
+      toggleBtn.onclick = function() {
+        if (input.type === 'password') {
+          input.type = 'text';
+          toggleBtn.innerHTML = '<i class="far fa-eye-slash"></i>';
+        } else {
+          input.type = 'password';
+          toggleBtn.innerHTML = '<i class="far fa-eye"></i>';
+        }
+      };
+      
+      // Make container relative and append button
+      container.style.position = 'relative';
+      container.appendChild(toggleBtn);
+    });
+  </script>
+</body>
+</html>

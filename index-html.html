@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Stryker R7 - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #3b82f6;
+      --primary-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
+      --secondary-color: #424242;
+      --success-color: #22c55e;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --background-color: #ffffff;
+      --surface-color: #f8f9fa;
+      --text-primary: #212121;
+      --text-secondary: #616161;
+      --border-color: #e0e0e0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --card-gradient: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.02));
+    }
+
+    body.dark-theme {
+      --primary-color: #3b82f6;
+      --primary-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
+      --secondary-color: #9aa0a6;
+      --background-color: #121212;
+      --surface-color: #1e1e1e;
+      --text-primary: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --border-color: #3c4043;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+      --card-gradient: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+    }
+
+    .header {
+      background-color: var(--surface-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 4px var(--shadow-color);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .logo i {
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+
+    .logo h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-button {
+      background-color: transparent;
+      border: none;
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary-color);
+    }
+
+    .nav-button.active {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary-color);
+    }
+
+    .nav-button i {
+      font-size: 16px;
+    }
+
+    .main-content {
+      margin-top: 30px;
+      padding-bottom: 60px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--surface-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 8px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--card-gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+    }
+
+    .stat-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .stat-icon {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 24px;
+      color: var(--primary-color);
+      opacity: 0.2;
+    }
+
+    .progress-container {
+      margin-top: 16px;
+      height: 6px;
+      background-color: rgba(59, 130, 246, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--primary-gradient);
+      border-radius: 3px;
+      width: 0;
+      transition: width 0.5s ease;
+    }
+
+    .controls-section {
+      background: var(--surface-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 8px var(--shadow-color);
+      margin-bottom: 40px;
+    }
+
+    .controls-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .control-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .form-input {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      font-size: 14px;
+      width: 100%;
+    }
+
+    .action-button {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .action-button:disabled {
+      background: var(--secondary-color);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .log-section {
+      background: var(--surface-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 8px var(--shadow-color);
+    }
+
+    .log-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .view-all {
+      color: var(--primary-color);
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .log-table th {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .log-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .log-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-success {
+      background-color: rgba(40, 167, 69, 0.1);
+      color: var(--success-color);
+    }
+
+    .status-warning {
+      background-color: rgba(255, 193, 7, 0.1);
+      color: var(--warning-color);
+    }
+
+    .status-error {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: var(--error-color);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 16px;
+      }
+
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .log-table th:nth-child(3),
+      .log-table td:nth-child(3) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <a href="/" class="logo">
+        <i class="fas fa-cube"></i>
+        <h1>Web Stryker R7</h1>
+      </a>
+      <div class="nav-menu">
+        <button class="nav-button active" onclick="navigateTo('dashboard')">
+          <i class="fas fa-chart-pie"></i>
+          Dashboard
+        </button>
+        <button class="nav-button" onclick="navigateTo('extraction')">
+          <i class="fas fa-download"></i>
+          Extraction
+        </button>
+        <button class="nav-button" onclick="navigateTo('results')">
+          <i class="fas fa-database"></i>
+          Results
+        </button>
+        <button class="nav-button" onclick="navigateTo('logs')">
+          <i class="fas fa-list"></i>
+          Logs
+        </button>
+        <button class="nav-button" onclick="navigateTo('settings')">
+          <i class="fas fa-cog"></i>
+          Settings
+        </button>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <h2 class="section-title">Dashboard</h2>
+
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-title">Total Extractions</div>
+        <div class="stat-value" id="totalExtractions">0</div>
+        <div class="stat-subtitle">out of 100,000 target</div>
+        <i class="stat-icon fas fa-download"></i>
+        <div class="progress-container">
+          <div class="progress-bar" id="totalExtractionsProgress" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">Success Rate</div>
+        <div class="stat-value" id="successRate">0%</div>
+        <div class="stat-subtitle">of all extractions</div>
+        <i class="stat-icon fas fa-check-circle"></i>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">Companies Found</div>
+        <div class="stat-value" id="companiesFound">0</div>
+        <div class="stat-subtitle">with valid data</div>
+        <i class="stat-icon fas fa-building"></i>
+        <div class="progress-container">
+          <div class="progress-bar" id="companiesProgress" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">Products Extracted</div>
+        <div class="stat-value" id="productsExtracted">0</div>
+        <div class="stat-subtitle">across all extractions</div>
+        <i class="stat-icon fas fa-shopping-cart"></i>
+      </div>
+    </div>
+
+    <div class="controls-section">
+      <div class="controls-title">Quick Extraction</div>
+      <div class="controls-grid">
+        <div class="control-item">
+          <label class="control-label" for="extractionUrl">Target URL</label>
+          <input type="text" class="form-input" id="extractionUrl" placeholder="https://example.com">
+        </div>
+        <div class="control-item">
+          <label class="control-label" for="extractionDepth">Crawl Depth</label>
+          <select class="form-input" id="extractionDepth">
+            <option value="1">1 - Single page</option>
+            <option value="2">2 - Follow links (1 level)</option>
+            <option value="3" selected>3 - Follow links (2 levels)</option>
+            <option value="4">4 - Deep crawl</option>
+          </select>
+        </div>
+        <div class="control-item" style="justify-content: flex-end">
+          <button class="action-button" id="startExtractionBtn" onclick="startExtraction()">
+            <i class="fas fa-play"></i>
+            Start Extraction
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="log-section">
+      <div class="log-title">
+        Recent Activity
+        <a href="/logs" class="view-all" onclick="navigateTo('logs'); return false;">View all</a>
+      </div>
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>URL</th>
+            <th>Operation</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="recentActivitiesTable">
+          <!-- Table rows will be populated dynamically -->
+          <tr>
+            <td>2025-03-10 09:15:22</td>
+            <td>https://example.com</td>
+            <td>Extraction</td>
+            <td><span class="status-badge status-success">Completed</span></td>
+          </tr>
+          <tr>
+            <td>2025-03-10 09:14:05</td>
+            <td>https://sample-store.com</td>
+            <td>Extraction</td>
+            <td><span class="status-badge status-warning">In Progress</span></td>
+          </tr>
+          <tr>
+            <td>2025-03-10 09:10:30</td>
+            <td>https://invalid-site.net</td>
+            <td>Extraction</td>
+            <td><span class="status-badge status-error">Failed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    // Theme toggle
+    let darkTheme = false;
+
+    function toggleTheme() {
+      darkTheme = !darkTheme;
+      document.body.classList.toggle('dark-theme', darkTheme);
+      const icon = document.querySelector('.theme-toggle i');
+      icon.className = darkTheme ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    // Navigation
+    function navigateTo(page) {
+      switch (page) {
+        case 'dashboard':
+          window.location.href = '/';
+          break;
+        case 'extraction':
+          window.location.href = '/extraction';
+          break;
+        case 'results':
+          window.location.href = '/results';
+          break;
+        case 'logs':
+          window.location.href = '/logs';
+          break;
+        case 'settings':
+          window.location.href = '/settings';
+          break;
+        default:
+          console.error('Unknown page:', page);
+      }
+    }
+
+    // Start extraction
+    function startExtraction() {
+      const url = document.getElementById('extractionUrl').value;
+      if (!url) {
+        alert('Please enter a URL');
+        return;
+      }
+      
+      const depth = document.getElementById('extractionDepth').value;
+      
+      // Disable button
+      const button = document.getElementById('startExtractionBtn');
+      button.disabled = true;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+      
+      // Create form data
+      const formData = new FormData();
+      formData.append('url', url);
+      formData.append('depth', depth);
+      
+      // Submit form
+      fetch('/api/extract', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = `/extraction_status/${data.extraction_id}`;
+        } else {
+          alert(`Error: ${data.error}`);
+          button.disabled = false;
+          button.innerHTML = '<i class="fas fa-play"></i> Start Extraction';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to start extraction');
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-play"></i> Start Extraction';
+      });
+    }
+
+    // Load stats
+    function loadStats() {
+      fetch('/api/stats')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('totalExtractions').textContent = data.processed.toLocaleString();
+          document.getElementById('successRate').textContent = `${Math.round((data.success / data.processed) * 100)}%`;
+          document.getElementById('companiesFound').textContent = data.company_data.found.toLocaleString();
+          document.getElementById('productsExtracted').textContent = data.product_data.found.toLocaleString();
+          
+          // Update progress bars
+          document.getElementById('totalExtractionsProgress').style.width = `${(data.processed / 100000) * 100}%`;
+          document.getElementById('companiesProgress').style.width = `${(data.company_data.found / data.processed) * 100}%`;
+        })
+        .catch(error => console.error('Error loading stats:', error));
+    }
+
+    // Load recent activities
+    function loadRecentActivities() {
+      fetch('/api/recent_activities')
+        .then(response => response.json())
+        .then(data => {
+          const tbody = document.getElementById('recentActivitiesTable');
+          tbody.innerHTML = '';
+          
+          data.forEach(activity => {
+            const row = document.createElement('tr');
+            
+            const timestampCell = document.createElement('td');
+            timestampCell.textContent = activity.timestamp;
+            row.appendChild(timestampCell);
+            
+            const urlCell = document.createElement('td');
+            urlCell.textContent = activity.url;
+            row.appendChild(urlCell);
+            
+            const operationCell = document.createElement('td');
+            operationCell.textContent = activity.operation;
+            row.appendChild(operationCell);
+            
+            const statusCell = document.createElement('td');
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `status-badge status-${activity.status.toLowerCase()}`;
+            statusBadge.textContent = activity.status;
+            statusCell.appendChild(statusBadge);
+            row.appendChild(statusCell);
+            
+            tbody.appendChild(row);
+          });
+        })
+        .catch(error => console.error('Error loading activities:', error));
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check for dark mode preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        toggleTheme();
+      }
+      
+      // Load initial data
+      loadStats();
+      loadRecentActivities();
+      
+      // Set up refresh interval
+      setInterval(loadStats, 30000);
+      setInterval(loadRecentActivities, 60000);
+    });
+  </script>
+</body>
+</html>
